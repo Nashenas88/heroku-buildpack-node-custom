@@ -5,10 +5,12 @@ ENV_DIR=${3:-}
 DATABASE_URL=$(cat $ENV_DIR/DATABASE_URL)
 OUTPUT_DIR=$BUILD_DIR/server/public/scripts
 
-sudo apt-get install npm
-ls
+curl https://nodejs.org/dist/v6.9.4/node-v6.9.4-linux-x64.tar.xz -sSf > node.tar.xz
+tar xf node.tar.xz
+NODE_BIN=$(pwd)/node-v6.9.4-linux-x64/bin
+cd $BUILD_DIR
 pushd browser
-npm init
+$NODE_BIN/npm init
 tsc
 # Copy transpiled js files into output_dir
 for file in $(find build -name '*.js'); do
@@ -21,7 +23,7 @@ for file in $(find build -name '*.js'); do
 done
 popd
 pushd server
-npm init
+$NODE_BIN/npm init
 tsc
 cp public/static-scripts/* $(OUTPUT_DIR)
 popd
