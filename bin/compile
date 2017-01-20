@@ -1,0 +1,31 @@
+#!/bin/bash
+
+BUILD_DIR=${1:-}
+ENV_DIR=${3:-}
+DATABASE_URL=$(cat $ENV_DIR/DATABASE_URL)
+OUTPUT_DIR=$BUILD_DIR/server/public/scripts
+
+apt install npm
+pushd browser
+npm init
+tsc
+# Copy transpiled js files into output_dir
+for file in $(find build -name '*.js'); do
+    # We don't want the browser files to have 'browser' in their path,
+    # so increase the cut amount for those.
+    [[ $file = *"/browser/"* ]] && cut_amt=3 || cut_amt=2;
+    out=$(OUTPUT_DIR)/$(dirname $(echo $file | cut -sd / -f${cut_amt}-));
+    mkdir -p $out;
+    cp $file $out;
+done
+popd
+pushd server
+npm init
+tsc
+cp public/static-scripts/* $(OUTPUT_DIR)
+popd
+
+# Now run the migrations
+npm install -g db-migrate
+npm install -g db-migrate-pg
+db-migrate up:prod
