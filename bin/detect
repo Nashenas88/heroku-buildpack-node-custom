@@ -1,8 +1,4 @@
 #!/bin/bash
 
-if [ -d browser -a -d server ]; then
-    echo "Node"
-    exit 0
-else
-    exit 1
-fi
+echo "NodeCustom"
+exit 0
