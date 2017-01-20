@@ -6,6 +6,7 @@ DATABASE_URL=$(cat $ENV_DIR/DATABASE_URL)
 OUTPUT_DIR=$BUILD_DIR/server/public/scripts
 
 sudo apt-get install npm
+ls
 pushd browser
 npm init
 tsc
